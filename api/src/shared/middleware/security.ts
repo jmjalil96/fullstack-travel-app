@@ -1,23 +1,15 @@
-import express, { Express } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import { logger } from './logger.js';
+import express, { Express } from 'express'
+import rateLimit from 'express-rate-limit'
+import helmet from 'helmet'
+
+import { logger } from './logger.js'
 
 /**
  * Apply security middleware to the Express app
  * Should be called early in the middleware chain, after request logging
  */
 export const applySecurityMiddleware = (app: Express): void => {
-  // CORS - Allow all origins for now
-  app.use(
-    cors({
-      origin: '*',
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    })
-  );
+  // Note: CORS is now configured in app.ts (before BetterAuth)
 
   // Helmet - Security headers
   app.use(
@@ -26,7 +18,7 @@ export const applySecurityMiddleware = (app: Express): void => {
       contentSecurityPolicy: false,
       // Keep other defaults enabled
     })
-  );
+  )
 
   // Rate limiting - 100 requests per 15 minutes per IP
   const limiter = rateLimit({
@@ -40,18 +32,18 @@ export const applySecurityMiddleware = (app: Express): void => {
         ip: req.ip,
         path: req.path,
         message: 'Rate limit exceeded',
-      });
+      })
       res.status(429).json({
         error: 'Too many requests from this IP, please try again later',
         statusCode: 429,
-      });
+      })
     },
-  });
-  app.use(limiter);
+  })
+  app.use(limiter)
 
   // Body parsing middleware
-  app.use(express.json({ limit: '10mb' })); // Parse JSON bodies (10mb limit)
-  app.use(express.urlencoded({ extended: true, limit: '1mb' })); // Parse URL-encoded bodies
+  app.use(express.json({ limit: '10mb' })) // Parse JSON bodies (10mb limit)
+  app.use(express.urlencoded({ extended: true, limit: '1mb' })) // Parse URL-encoded bodies
 
-  logger.info('Security middleware applied: CORS, Helmet, Rate Limiting, Body Parsing');
-};
+  logger.info('Security middleware applied: Helmet, Rate Limiting, Body Parsing')
+}

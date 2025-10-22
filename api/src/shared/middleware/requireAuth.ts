@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { fromNodeHeaders } from 'better-auth/node';
-import { auth } from '../../config/auth.js';
-import { UnauthorizedError } from '../errors/errors.js';
+import { fromNodeHeaders } from 'better-auth/node'
+import { Request, Response, NextFunction } from 'express'
+
+import { auth } from '../../config/auth.js'
+import { UnauthorizedError } from '../errors/errors.js'
 
 /**
  * Middleware to protect routes - requires valid session
@@ -20,14 +21,14 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
     .getSession({
       headers: fromNodeHeaders(req.headers),
     })
-    .then((session) => {
+    .then(session => {
       if (!session?.user) {
-        throw new UnauthorizedError('Authentication required');
+        throw new UnauthorizedError('Authentication required')
       }
 
       // Attach user to request for use in route handlers
-      req.user = session.user;
-      next();
+      req.user = session.user
+      next()
     })
-    .catch(next); // Pass errors to Express error handler
+    .catch(next) // Pass errors to Express error handler
 }

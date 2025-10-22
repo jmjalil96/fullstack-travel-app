@@ -1,5 +1,6 @@
-import pino from 'pino';
-import { env } from '../../config/env.js';
+import pino from 'pino'
+
+import { env } from '../../config/env.js'
 
 /**
  * Configured pino logger instance
@@ -20,11 +21,11 @@ export const logger = pino({
         }
       : undefined,
   formatters: {
-    level: (label) => {
-      return { level: label };
+    level: label => {
+      return { level: label }
     },
   },
   base: {
     env: env.NODE_ENV,
   },
-});
+})

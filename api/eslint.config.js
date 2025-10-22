@@ -1,58 +1,61 @@
-import js from '@eslint/js';
-import tsParser from '@typescript-eslint/parser';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import prettier from 'eslint-config-prettier';
+import js from '@eslint/js'
+import prettierConfig from 'eslint-config-prettier'
+import importPlugin from 'eslint-plugin-import'
+import tseslint from 'typescript-eslint'
 
-export default [
-  // Base ESLint recommended rules
+export default tseslint.config(
+  // Ignore patterns
+  {
+    ignores: ['node_modules', 'dist', 'coverage', 'prisma/migrations'],
+  },
+
+  // Base configs
   js.configs.recommended,
+  ...tseslint.configs.recommended,
+  prettierConfig,
 
-  // TypeScript files configuration
+  // Main configuration
   {
     files: ['**/*.ts'],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: './tsconfig.json',
-      },
-      globals: {
-        // Node.js globals
-        console: 'readonly',
-        process: 'readonly',
-        Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        global: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        setImmediate: 'readonly',
-        clearImmediate: 'readonly',
-      },
-    },
     plugins: {
-      '@typescript-eslint': tsPlugin,
+      import: importPlugin,
+    },
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    settings: {
+      'import/resolver': {
+        typescript: true,
+        node: true,
+      },
     },
     rules: {
-      ...tsPlugin.configs.recommended.rules,
-      // Allow unused vars that start with underscore (common pattern)
+      // TypeScript
       '@typescript-eslint/no-unused-vars': [
-        'error',
+        'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+
+      // Import Rules
+      'import/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
+      'import/no-duplicates': 'warn',
+      'import/no-unresolved': 'off', // TypeScript handles this
+
+      // General
+      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'prefer-const': 'warn',
+      'no-var': 'error',
     },
-  },
-
-  // Disable ESLint rules that conflict with Prettier
-  prettier,
-
-  // Global ignores
-  {
-    ignores: ['node_modules/**', 'dist/**', 'coverage/**', '*.config.js'],
-  },
-];
+  }
+)

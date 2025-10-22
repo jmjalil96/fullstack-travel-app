@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { ZodError, ZodSchema } from 'zod';
-import { BadRequestError } from '../errors/errors.js';
+import { Request, Response, NextFunction } from 'express'
+import { ZodError, ZodSchema } from 'zod'
+
+import { BadRequestError } from '../errors/errors.js'
 
 interface ValidationSchemas {
-  body?: ZodSchema;
-  query?: ZodSchema;
-  params?: ZodSchema;
+  body?: ZodSchema
+  query?: ZodSchema
+  params?: ZodSchema
 }
 
 /**
@@ -20,32 +21,32 @@ export const validateRequest = (schemas: ValidationSchemas) => {
     try {
       // Validate body if schema provided
       if (schemas.body) {
-        req.body = schemas.body.parse(req.body);
+        req.body = schemas.body.parse(req.body)
       }
 
       // Validate query params if schema provided
       if (schemas.query) {
-        req.query = schemas.query.parse(req.query) as typeof req.query;
+        req.query = schemas.query.parse(req.query) as typeof req.query
       }
 
       // Validate URL params if schema provided
       if (schemas.params) {
-        req.params = schemas.params.parse(req.params) as typeof req.params;
+        req.params = schemas.params.parse(req.params) as typeof req.params
       }
 
-      next();
+      next()
     } catch (error) {
       if (error instanceof ZodError) {
         // Format zod errors into readable structure
-        const issues = error.issues.map((issue) => ({
+        const issues = error.issues.map(issue => ({
           path: issue.path.join('.'),
           message: issue.message,
-        }));
+        }))
 
-        next(new BadRequestError('Validation failed', { issues }));
-        return;
+        next(new BadRequestError('Validation failed', { issues }))
+        return
       }
-      next(error);
+      next(error)
     }
-  };
-};
+  }
+}

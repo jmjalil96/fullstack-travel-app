@@ -2,9 +2,9 @@
  * Base error class for all application errors
  */
 export class AppError extends Error {
-  public readonly statusCode: number;
-  public readonly isOperational: boolean;
-  public readonly metadata?: Record<string, unknown>;
+  public readonly statusCode: number
+  public readonly isOperational: boolean
+  public readonly metadata?: Record<string, unknown>
 
   constructor(
     message: string,
@@ -12,14 +12,14 @@ export class AppError extends Error {
     isOperational: boolean = true,
     metadata?: Record<string, unknown>
   ) {
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    this.metadata = metadata;
+    super(message)
+    this.statusCode = statusCode
+    this.isOperational = isOperational
+    this.metadata = metadata
 
     // Maintains proper stack trace for where error was thrown
-    Error.captureStackTrace(this, this.constructor);
-    Object.setPrototypeOf(this, AppError.prototype);
+    Error.captureStackTrace(this, this.constructor)
+    Object.setPrototypeOf(this, AppError.prototype)
   }
 }
 
@@ -28,8 +28,8 @@ export class AppError extends Error {
  */
 export class BadRequestError extends AppError {
   constructor(message: string = 'Bad request', metadata?: Record<string, unknown>) {
-    super(message, 400, true, metadata);
-    Object.setPrototypeOf(this, BadRequestError.prototype);
+    super(message, 400, true, metadata)
+    Object.setPrototypeOf(this, BadRequestError.prototype)
   }
 }
 
@@ -38,8 +38,8 @@ export class BadRequestError extends AppError {
  */
 export class UnauthorizedError extends AppError {
   constructor(message: string = 'Unauthorized', metadata?: Record<string, unknown>) {
-    super(message, 401, true, metadata);
-    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+    super(message, 401, true, metadata)
+    Object.setPrototypeOf(this, UnauthorizedError.prototype)
   }
 }
 
@@ -48,8 +48,8 @@ export class UnauthorizedError extends AppError {
  */
 export class ForbiddenError extends AppError {
   constructor(message: string = 'Forbidden', metadata?: Record<string, unknown>) {
-    super(message, 403, true, metadata);
-    Object.setPrototypeOf(this, ForbiddenError.prototype);
+    super(message, 403, true, metadata)
+    Object.setPrototypeOf(this, ForbiddenError.prototype)
   }
 }
 
@@ -58,8 +58,8 @@ export class ForbiddenError extends AppError {
  */
 export class NotFoundError extends AppError {
   constructor(message: string = 'Resource not found', metadata?: Record<string, unknown>) {
-    super(message, 404, true, metadata);
-    Object.setPrototypeOf(this, NotFoundError.prototype);
+    super(message, 404, true, metadata)
+    Object.setPrototypeOf(this, NotFoundError.prototype)
   }
 }
 
@@ -68,8 +68,8 @@ export class NotFoundError extends AppError {
  */
 export class ConflictError extends AppError {
   constructor(message: string = 'Resource conflict', metadata?: Record<string, unknown>) {
-    super(message, 409, true, metadata);
-    Object.setPrototypeOf(this, ConflictError.prototype);
+    super(message, 409, true, metadata)
+    Object.setPrototypeOf(this, ConflictError.prototype)
   }
 }
 
@@ -78,7 +78,7 @@ export class ConflictError extends AppError {
  */
 export class InternalServerError extends AppError {
   constructor(message: string = 'Internal server error', metadata?: Record<string, unknown>) {
-    super(message, 500, false, metadata);
-    Object.setPrototypeOf(this, InternalServerError.prototype);
+    super(message, 500, false, metadata)
+    Object.setPrototypeOf(this, InternalServerError.prototype)
   }
 }

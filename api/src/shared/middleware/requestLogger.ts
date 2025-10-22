@@ -1,7 +1,10 @@
-import { type IncomingMessage, type ServerResponse } from 'http';
-import { logger } from './logger.js';
-import { env } from '../../config/env.js';
-import pinoHttp from 'pino-http';
+import { type IncomingMessage, type ServerResponse } from 'http'
+
+import pinoHttp from 'pino-http'
+
+import { env } from '../../config/env.js'
+
+import { logger } from './logger.js'
 
 /**
  * HTTP request logging middleware
@@ -15,17 +18,17 @@ export const requestLogger = pinoHttp({
   autoLogging: true,
   customLogLevel: (_req: IncomingMessage, res: ServerResponse, err?: Error) => {
     if (res.statusCode >= 500 || err) {
-      return 'error';
+      return 'error'
     }
     if (res.statusCode >= 400) {
-      return 'warn';
+      return 'warn'
     }
-    return env.NODE_ENV === 'production' ? 'info' : 'debug';
+    return env.NODE_ENV === 'production' ? 'info' : 'debug'
   },
   customSuccessMessage: (req: IncomingMessage, res: ServerResponse) => {
-    return `${req.method} ${req.url} ${res.statusCode}`;
+    return `${req.method} ${req.url} ${res.statusCode}`
   },
   customErrorMessage: (req: IncomingMessage, res: ServerResponse, err: Error) => {
-    return `${req.method} ${req.url} ${res.statusCode} - ${err.message}`;
+    return `${req.method} ${req.url} ${res.statusCode} - ${err.message}`
   },
-});
+})
