@@ -5,6 +5,9 @@ import { z } from 'zod'
 
 import { auth } from './config/auth.js'
 import { env } from './config/env.js'
+import { productsRouter } from './features/assistcard/products/index.js'
+import { policiesRouter } from './features/policies/index.js'
+import { quotesRouter } from './features/quotes/index.js'
 import { errorHandler } from './shared/errors/errorHandler.js'
 import { NotFoundError, UnauthorizedError } from './shared/errors/errors.js'
 import { asyncHandler } from './shared/middleware/asyncHandler.js'
@@ -34,7 +37,12 @@ app.all('/api/auth/*', toNodeHandler(auth))
 // 4. Security middleware - Helmet, Rate Limiting, Body Parsing (CORS already applied)
 applySecurityMiddleware(app)
 
-// 4. Routes
+// 5. API Routes
+app.use('/api/assistcard/quote', productsRouter)
+app.use('/api/policies', policiesRouter)
+app.use('/api/quotes', quotesRouter)
+
+// 6. Health Check
 app.get('/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
@@ -83,12 +91,12 @@ app.get(
   })
 )
 
-// 4. 404 handler - must be after all other routes
+// 7. 404 handler - must be after all other routes
 app.use((_req: Request, _res: Response) => {
   throw new NotFoundError('Route not found')
 })
 
-// 5. Global error handler - must be LAST
+// 8. Global error handler - must be LAST
 app.use(errorHandler)
 
 export { app }

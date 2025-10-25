@@ -20,7 +20,20 @@ const envSchema = z.object({
     .string()
     .default('http://localhost:5173,http://localhost:5174')
     .transform(val => val.split(',').map(origin => origin.trim())),
-  // Add more environment variables here as needed
+
+  // Assistcard API
+  ASSISTCARD_USE_MOCK: z
+    .string()
+    .default('false')
+    .transform(val => val === 'true'),
+  ASSISTCARD_API_URL: z.string().url().optional(),
+  ASSISTCARD_COUNTRY_CODE: z.string().length(2).optional(),
+  ASSISTCARD_AGENCY_CODE: z.string().max(5).optional(),
+  ASSISTCARD_BRANCH_CODE: z
+    .string()
+    .optional()
+    .transform(val => (val ? parseInt(val, 10) : undefined)),
+  // Note: USERNAME and PASSWORD accessed via process.env (not validated here for security)
 })
 
 // Validate and parse environment variables
